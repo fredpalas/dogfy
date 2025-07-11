@@ -1,0 +1,8 @@
+services:
+  Apps.logistics.controllers.DeliveryPostController:
+    class: ../../controllers/DeliveryPostController
+    arguments: ['@Logistics.Shared.domain.CommandBus', '@Shared.domain.UuidGenerator']
+
+  Apps.logistics.controllers.DeliveryStatusGetController:
+    class: ../../controllers/DeliveryStatusGetController
+    arguments: ['@Logistics.Shared.domain.QueryBus']

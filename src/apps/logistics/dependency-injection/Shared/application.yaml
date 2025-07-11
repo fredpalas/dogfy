@@ -1,0 +1,35 @@
+services:
+  Logistics.Shared.MongoConfig:
+    factory:
+      class: ../../../../Contexts/Logistics/Shared/infrastructure/persistence/mongo/MongoConfigFactory
+      method: 'createConfig'
+
+  Logistics.Shared.ConnectionManager:
+    factory:
+      class: ../../../../Contexts/Shared/infrastructure/persistence/mongo/MongoClientFactory
+      method: 'createClient'
+    arguments: ['logistics', '@Logistics.Shared.MongoConfig']
+
+  Logistics.Shared.CommandHandlers:
+    class: ../../../../Contexts/Shared/infrastructure/CommandBus/CommandHandlers
+    arguments: ['!tagged commandHandler']
+
+  Logistics.Shared.domain.CommandBus:
+    class: ../../../../Contexts/Shared/infrastructure/CommandBus/InMemoryCommandBus
+    arguments: ['@Logistics.Shared.CommandHandlers']
+
+  Logistics.Shared.QueryHandlers:
+    class: ../../../../Contexts/Shared/infrastructure/QueryBus/QueryHandlers
+    arguments: ['!tagged queryHandler']
+
+  Logistics.Shared.domain.QueryBus:
+    class: ../../../../Contexts/Shared/infrastructure/QueryBus/InMemoryQueryBus
+    arguments: ['@Logistics.Shared.QueryHandlers']
+
+  Logistics.Shared.domain.EventBus:
+    class: ../../../../Contexts/Shared/infrastructure/EventBus/InMemory/InMemoryAsyncEventBus
+
+  Shared.domain.UuidGenerator:
+    class: ../../../../Contexts/Shared/infrastructure/JsUuidGenerator
+
+

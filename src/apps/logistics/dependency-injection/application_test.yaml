@@ -1,0 +1,16 @@
+imports:
+  - { resource: ./application.yaml } 
+
+services:
+  Logistics.EnvironmentArranger:
+    class: ../../../../tests/Contexts/Shared/infrastructure/mongo/MongoEnvironmentArranger
+    arguments: ['@Logistics.Shared.ConnectionManager']
+  Logistics.ProviderApi.infrastructure.NrwProviderTrackingApiMock:
+    class: ../../../../tests/Contexts/Logistics/ProviderApi/infrastructure/NrwProviderTrackingApiMock
+    tags:
+      - { name: 'testProviderTrackingApi' }
+  Logistics.ProviderApi.application.FindProviderDeliveryStatusQueryHandler:
+    class: ../../../Contexts/Logistics/ProviderApi/application/FindProviderDeliveryStatusQueryHandler
+    arguments: [ '!tagged testProviderTrackingApi' ]
+    tags:
+      - { name: 'queryHandler', handles: FindProviderDeliveryStatusQuery }

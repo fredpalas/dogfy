@@ -1,0 +1,35 @@
+services:
+  Logistics.ProviderApi.infrastructure.NrwProviderTrackingApi:
+    class: ../../../../Contexts/Logistics/ProviderApi/infrastructure/NrwProviderTrackingApi
+    tags:
+      - { name: 'providerTrackingApi' }
+
+  Logistics.ProviderApi.application.FindProviderDeliveryStatusQueryHandler:
+    class: ../../../../Contexts/Logistics/ProviderApi/application/FindProviderDeliveryStatusQueryHandler
+    arguments: [ "!tagged providerTrackingApi" ]
+    tags:
+      - { name: 'queryHandler', handles: FindProviderDeliveryStatusQuery }
+  Logistics.ProviderApi.domain.ProviderApi.NRW:
+    class: ../../../../Contexts/Logistics/ProviderApi/infrastructure/NrwProviderApi
+    tags:
+      - { name: ProviderApi }
+
+  Logistics.ProviderApi.domain.ProviderApi.TLS:
+    class: ../../../../Contexts/Logistics/ProviderApi/infrastructure/TlsProviderApi
+    tags:
+      - { name: ProviderApi }
+
+  Logistics.ProviderApi.domain.ProviderApi.DUMMY:
+    class: ../../../../Contexts/Logistics/ProviderApi/infrastructure/DummyProviderApi
+    tags:
+      - { name: ProviderApi }
+
+  Logistics.ProviderApi.application.LabelGenerator:
+    class: ../../../../Contexts/Logistics/ProviderApi/application/LabelGenerator
+    arguments: [ "!tagged ProviderApi" ]
+
+  Logistics.ProviderApi.application.GenerateLabelCommandHandler:
+    class: ../../../../Contexts/Logistics/ProviderApi/application/GenerateLabelCommandHandler
+    arguments: [ '@Logistics.ProviderApi.application.LabelGenerator' ]
+    tags:
+      - { name: 'commandHandler', handles: GenerateLabelCommand }

@@ -1,0 +1,58 @@
+services:
+  Logistics.Deliveries.domain.DeliveryRepository:
+    class: ../../../../Contexts/Logistics/Deliveries/infrastructure/MongoDeliveryRepository
+    arguments: ['@Logistics.Shared.ConnectionManager']
+
+  Logistics.Deliveries.application.CreateDeliveryCommandHandler:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Create/CreateDeliveryCommandHandler
+    arguments: ['@Logistics.Deliveries.application.DeliveryCreator']
+    tags:
+      - { name: 'commandHandler', handles: CreateDeliveryCommand }
+
+  Logistics.Deliveries.application.DeliveryCreator:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Create/DeliveryCreator
+    arguments: ['@Logistics.Deliveries.domain.DeliveryRepository', '@Logistics.Shared.domain.EventBus']
+
+  Logistics.Deliveries.application.DeliveriesFinder:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/DeliveriesFinder
+    arguments: ['@Logistics.Deliveries.domain.DeliveryRepository']
+
+  Logistics.Deliveries.application.DeliveryFinder:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/DeliveryFinder
+    arguments: ['@Logistics.Deliveries.domain.DeliveryRepository']
+
+  Logistics.Deliveries.application.DeliveryByTrackingIdFinder:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/DeliveryByTrackingIdFinder
+    arguments: [ '@Logistics.Deliveries.domain.DeliveryRepository' ]
+
+  Logistics.Deliveries.application.DeliveryStatusUpdater:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Update/DeliveryStatusUpdater
+    arguments: ['@Logistics.Deliveries.domain.DeliveryRepository', '@Logistics.Deliveries.application.DeliveryFinder']
+
+  Logistics.Deliveries.application.FindDeliveriesQueryHandler:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/FindDeliveriesQueryHandler
+    arguments: ['@Logistics.Deliveries.application.DeliveriesFinder']
+    tags:
+      - { name: 'queryHandler', handles: FindDeliveriesQuery }
+
+  Logistics.Deliveries.application.UpdateDeliveryStatusCommandHandler:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Update/UpdateDeliveryStatusCommandHandler
+    arguments: ['@Logistics.Deliveries.application.DeliveryStatusUpdater']
+    tags:
+      - { name: 'commandHandler', handles: UpdateDeliveryStatusCommand }
+
+  Logistics.Deliveries.infrastructure.DeliveryStatusPollingOrchestrator:
+    class: ../../../../Contexts/Logistics/Deliveries/infrastructure/DeliveryStatusPollingOrchestrator
+    arguments: ['@Logistics.Shared.domain.QueryBus', '@Logistics.Shared.domain.CommandBus']
+
+  Logistics.Deliveries.application.FindDeliveryStatusQueryHandler:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/FindDeliveryStatusQueryHandler
+    arguments: [ '@Logistics.Deliveries.application.DeliveryFinder' ]
+    tags:
+      - { name: 'queryHandler', handles: FindDeliveryStatusQuery }
+
+  Logistics.Deliveries.application.FindDeliveryByTrackingIdQueryHandler:
+    class: ../../../../Contexts/Logistics/Deliveries/application/Find/FindDeliveryByTrackingIdQueryHandler
+    arguments: [ '@Logistics.Deliveries.application.DeliveryByTrackingIdFinder' ]
+    tags:
+      - { name: 'queryHandler', handles: FindDeliveryByTrackingIdQuery }
