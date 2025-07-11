@@ -43,7 +43,10 @@ docker-compose up -d mongodb
 npm test
 
 # Start application
-npm start
+npm dev:logistic:backend
+
+# Pulling Status from providers
+npm dev:command:logistics:poll:deliveries
 ```
 
 ### Docker
